@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-public class MessageDTO implements Serializable{
+public class MessageDTO implements Serializable {
 
     String postingDate;
     String creator;

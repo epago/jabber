@@ -6,7 +6,7 @@ import java.util.List;
 
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
-    List<Message> findByCreator(User creator);
+    List<Message> findByCreatorOrderByPostingDateDesc(User creator);
 
-    List<Message> findByCreatorIn(List<User> creatorList);
+    List<Message> findByCreatorInOrderByPostingDateDesc(List<User> creatorList);
 }

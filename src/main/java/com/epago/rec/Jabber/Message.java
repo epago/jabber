@@ -1,25 +1,24 @@
 package com.epago.rec.Jabber;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Message {
 
 
-    Date postingDate;
+    LocalDateTime postingDate;
     @ManyToOne
     User creator;
     @Id
@@ -27,7 +26,7 @@ public class Message {
     private Long id;
     private String value;
 
-    public Message(String value, Date postingDate, User creator) {
+    public Message(String value, LocalDateTime postingDate, User creator) {
         this.value = value;
         this.postingDate = postingDate;
         this.creator = creator;

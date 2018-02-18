@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,46 +24,49 @@ public class MessageRestController {
     }
 
 
-    @RequestMapping(path ="/messages" ,method = RequestMethod.POST)
+    @RequestMapping(path = "/messages", method = RequestMethod.POST)
     ResponseEntity<?> add(@PathVariable String username, @RequestBody String message) {
 
+        if (message.length() > 140) {
+            return ResponseEntity.badRequest().body("Invalid operation. Message to long.");
+        }
         Optional<User> user = userRepository.findByUsername(username);
         if (!user.isPresent()) {
             user = Optional.of(userRepository.saveAndFlush(new User(username)));
         }
-        this.messageRepository.saveAndFlush(new Message(message, new Date(), user.get()));
+        this.messageRepository.saveAndFlush(new Message(message, LocalDateTime.now(), user.get()));
 
         return ResponseEntity.noContent().build();
     }
 
-    @RequestMapping(path ="/messages",method = RequestMethod.GET)
+    @RequestMapping(path = "/messages", method = RequestMethod.GET)
     ResponseEntity<?> readMessages(@PathVariable String username) throws JsonProcessingException {
         Optional<User> user = userRepository.findByUsername(username);
         if (!user.isPresent()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().body(String.format("User %s not found", username));
         }
-        List<Message> messageList = this.messageRepository.findByCreator(user.get());
+        List<Message> messageList = this.messageRepository.findByCreatorOrderByPostingDateDesc(user.get());
 
         List<MessageDTO> messageDTOList = mapListEntityToDTO(messageList);
 
         return ResponseEntity.ok(messageDTOList);
     }
 
-    @RequestMapping(path ="/followeeMessages",method = RequestMethod.GET)
+    @RequestMapping(path = "/followeeMessages", method = RequestMethod.GET)
     ResponseEntity<?> readFolloweeMessages(@PathVariable String username) throws JsonProcessingException {
         Optional<User> user = userRepository.findByUsername(username);
         if (!user.isPresent()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().body(String.format("User %s not found", username));
         }
 
-        List<Message> messageList = this.messageRepository.findByCreatorIn(user.get().getFolloweesList());
+        List<Message> messageList = this.messageRepository.findByCreatorInOrderByPostingDateDesc(user.get().getFolloweesList());
 
         List<MessageDTO> messageDTOList = mapListEntityToDTO(messageList);
 
         return ResponseEntity.ok(messageDTOList);
     }
 
-    private List<MessageDTO> mapListEntityToDTO(List<Message> messageList){
+    private List<MessageDTO> mapListEntityToDTO(List<Message> messageList) {
         List<MessageDTO> messageDTOList = new ArrayList<>();
         for (Message message : messageList) {
             messageDTOList.add(

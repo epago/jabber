@@ -1,13 +1,13 @@
 package com.epago.rec.Jabber;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.sun.prism.shader.Solid_TextureYV12_AlphaTest_Loader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -34,13 +34,14 @@ public class UserRestController {
             User user = userOptional.get();
             user.getFolloweesList().add(userFoloweeOptional.get());
             userRepository.saveAndFlush(user);
-        }else{
-            ResponseEntity.badRequest();
+        } else {
+
+            return ResponseEntity.badRequest().body("One of users doesn't exist");
         }
 
 
         return ResponseEntity.noContent().build();
     }
-    
+
 
 }
