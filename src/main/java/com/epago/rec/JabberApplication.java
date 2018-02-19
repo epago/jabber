@@ -1,5 +1,4 @@
-package com.epago.rec.Jabber;
-
+package com.epago.rec;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

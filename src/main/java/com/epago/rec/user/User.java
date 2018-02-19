@@ -1,10 +1,10 @@
-package com.epago.rec.Jabber;
+package com.epago.rec.user;
 
+import com.epago.rec.message.Message;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -20,9 +20,9 @@ import java.util.Set;
 @ToString
 public class User {
 
-    String username;
+    private String username;
     @OneToMany
-    List<User> followeesList;
+    private List<User> followeesList;
     @Id
     @GeneratedValue
     private Long id;

@@ -1,4 +1,4 @@
-package com.epago.rec.Jabber;
+package com.epago.rec.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
