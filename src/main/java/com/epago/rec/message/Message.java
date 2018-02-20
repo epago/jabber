@@ -24,9 +24,9 @@ public class Message {
     private Long id;
     private String messageText;
 
-    public Message(String value, LocalDateTime postingDate, User creator) {
+    public Message(String value,  User creator) {
         this.messageText = value;
-        this.postingDate = postingDate;
+        this.postingDate = LocalDateTime.now();
         this.creator = creator;
     }
 }

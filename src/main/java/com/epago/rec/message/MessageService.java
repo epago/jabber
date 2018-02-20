@@ -34,7 +34,7 @@ public class MessageService {
         if (!user.isPresent()) {
             user = Optional.of(userRepository.saveAndFlush(new User(username)));
         }
-        this.messageRepository.saveAndFlush(new Message(messageText, LocalDateTime.now(), user.get()));
+        this.messageRepository.saveAndFlush(new Message(messageText, user.get()));
     }
 
     @Transactional
