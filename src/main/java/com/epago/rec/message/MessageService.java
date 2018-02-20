@@ -1,6 +1,6 @@
 package com.epago.rec.message;
 
-import com.epago.rec.api.JabberException;
+import com.epago.rec.JabberException;
 import com.epago.rec.api.MessageDTO;
 import com.epago.rec.user.User;
 import com.epago.rec.user.UserRepository;
@@ -37,6 +37,7 @@ public class MessageService {
         this.messageRepository.saveAndFlush(new Message(messageText, LocalDateTime.now(), user.get()));
     }
 
+    @Transactional
     public List<MessageDTO> readMessages(String username) throws JabberException {
         Optional<User> user = userRepository.findByUsername(username);
         if (!user.isPresent()) {
@@ -49,6 +50,7 @@ public class MessageService {
         return messageDTOList;
     }
 
+    @Transactional
     public List<MessageDTO> readFolloweeMessages(@PathVariable String username) throws JabberException {
         Optional<User> user = userRepository.findByUsername(username);
         if (!user.isPresent()) {

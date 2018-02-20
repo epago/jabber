@@ -1,5 +1,6 @@
 package com.epago.rec.api;
 
+import com.epago.rec.JabberException;
 import com.epago.rec.message.MessageService;
 import com.epago.rec.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class JabberRestController {
         try {
             messageService.add(username, messagedto.getMessageText());
         } catch (JabberException jabberException) {
-            return ResponseEntity.badRequest().body(jabberException.getMessage());
+            return ResponseEntity.badRequest().body(new ErrorDTO(jabberException.getMessage()));
         }
         return ResponseEntity.noContent().build();
     }
@@ -39,7 +40,7 @@ public class JabberRestController {
         try {
             userService.follow(username, followeeUsername);
         } catch (JabberException jabberException) {
-            return ResponseEntity.badRequest().body(jabberException.getMessage());
+            return ResponseEntity.badRequest().body(new ErrorDTO(jabberException.getMessage()));
         }
 
         return ResponseEntity.noContent().build();
@@ -52,7 +53,7 @@ public class JabberRestController {
         try {
             messageDTOList = messageService.readMessages(username);
         } catch (JabberException jabberException) {
-            return ResponseEntity.badRequest().body(jabberException.getMessage());
+            return ResponseEntity.badRequest().body(new ErrorDTO(jabberException.getMessage()));
         }
 
         return ResponseEntity.ok(messageDTOList);
@@ -64,7 +65,7 @@ public class JabberRestController {
         try {
             messageDTOList = messageService.readFolloweeMessages(username);
         } catch (JabberException jabberException) {
-            return ResponseEntity.badRequest().body(jabberException.getMessage());
+            return ResponseEntity.badRequest().body(new ErrorDTO(jabberException.getMessage()));
         }
 
         return ResponseEntity.ok(messageDTOList);

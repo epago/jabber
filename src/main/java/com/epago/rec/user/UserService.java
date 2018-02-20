@@ -1,6 +1,6 @@
 package com.epago.rec.user;
 
-import com.epago.rec.api.JabberException;
+import com.epago.rec.JabberException;
 import com.epago.rec.message.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

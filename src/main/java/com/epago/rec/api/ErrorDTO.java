@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class JabberException extends Exception {
-    private String message;
+public class ErrorDTO {
+    String error;
 }
