@@ -5,10 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,9 +22,9 @@ import java.util.Set;
 @ToString
 public class User {
 
-    private String username;
+    String username;
     @OneToMany
-    private List<User> followeesList;
+    List<User> followeesList;
     @Id
     @GeneratedValue
     private Long id;
@@ -31,6 +33,7 @@ public class User {
 
     public User(String username) {
         this.username = username;
+        this.followeesList = new ArrayList<>();
 
     }
 

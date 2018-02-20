@@ -65,6 +65,35 @@ public class MessageServiceTests {
         assertEquals(messageDTOList.get(0).getCreator(), messageList.get(0).getCreator().getUsername());
 	}
 
+    @Test(expected = JabberException.class)
+    public void testReadMessageInValid()  throws Exception{
+        when(userRepository.findByUsername(Mockito.anyString()))
+                .thenReturn(Optional.empty());
+        messageService.readMessages("username");
 
+    }
+
+    @Test
+    public void testreadFolloweeMessagesValid()  throws Exception{
+        when(userRepository.findByUsername(Mockito.anyString()))
+                .thenReturn(Optional.of(new User("username")));
+        List<Message> messageList = new ArrayList<Message>();
+        messageList.add(new Message("message1", new User("user1")));
+        List<User> userList=new ArrayList<User>();
+        userList.add(new User(Mockito.anyString()));
+        when(messageRepository.findByCreatorInOrderByPostingDateDesc(userList))
+                .thenReturn(messageList);
+        List<MessageDTO> messageDTOList = messageService.readFolloweeMessages("username");
+        assertEquals(messageDTOList.get(0).getMessageText(), messageList.get(0).getMessageText());
+        assertEquals(messageDTOList.get(0).getCreator(), messageList.get(0).getCreator().getUsername());
+    }
+
+    @Test(expected = JabberException.class)
+    public void testreadFolloweeMessagesInValid()  throws Exception{
+        when(userRepository.findByUsername(Mockito.anyString()))
+                .thenReturn(Optional.empty());
+        messageService.readFolloweeMessages("username");
+
+    }
 
 }
