@@ -6,7 +6,6 @@ import com.epago.rec.user.UserRepository;
 import com.epago.rec.user.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,38 +19,43 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 public class UserServiceTests {
 
-	@Autowired
+    private final static String USERNAME1 = "username1";
+    private final static String USERNAME2 = "username2";
+
+    @Autowired
     UserService userService;
 
-	@MockBean
-	private MessageRepository messageRepository;
+    @MockBean
+    private MessageRepository messageRepository;
 
-	@MockBean
-	private UserRepository userRepository;
+    @MockBean
+    private UserRepository userRepository;
 
     @Test
     public void testAddValid() throws Exception {
-        when(userRepository.findByUsername(Mockito.anyString()))
-                .thenReturn(Optional.of(new User("username")));
-        userService.follow("username1", "username2");
+        when(userRepository.findByUsername(USERNAME1))
+                .thenReturn(Optional.of(new User(USERNAME1)));
+        when(userRepository.findByUsername(USERNAME2))
+                .thenReturn(Optional.of(new User(USERNAME2)));
+        userService.follow(USERNAME1, USERNAME2);
 
     }
 
     @Test(expected = JabberException.class)
     public void testAddInValid1() throws Exception {
-        when(userRepository.findByUsername("username1"))
+        when(userRepository.findByUsername(USERNAME1))
                 .thenReturn(Optional.empty());
-        userService.follow("username1", "username2");
+        userService.follow(USERNAME1, USERNAME2);
 
     }
 
     @Test(expected = JabberException.class)
     public void testAddInValid2() throws Exception {
-        when(userRepository.findByUsername("username1"))
-                .thenReturn(Optional.of(new User("username")));
-        when(userRepository.findByUsername("username2"))
+        when(userRepository.findByUsername(USERNAME1))
+                .thenReturn(Optional.of(new User(USERNAME1)));
+        when(userRepository.findByUsername(USERNAME2))
                 .thenReturn(Optional.empty());
-        userService.follow("username1", "username2");
+        userService.follow(USERNAME1, USERNAME2);
 
     }
 }

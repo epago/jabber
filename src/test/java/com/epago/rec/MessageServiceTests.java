@@ -18,81 +18,85 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.when;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class MessageServiceTests {
 
-	@Autowired
-	private MessageService messageService;
+    private final static String USERNAME = "username";
+    private final static String SHORT_MESSAGE = "First example message. ";
+    private final static String LONG_MESSAGE = "1234567890123456789012345678901234567890" +
+            "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
+            "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
+            "12345678901234567890123456789012345678901234567890123456789012345678901234567890";
 
-	@MockBean
-	private MessageRepository messageRepository;
+    @Autowired
+    private MessageService messageService;
 
-	@MockBean
-	private UserRepository userRepository;
+    @MockBean
+    private MessageRepository messageRepository;
 
-	@Test
-	public void testAddValid()  throws Exception{
+    @MockBean
+    private UserRepository userRepository;
+
+    @Test
+    public void testAddValid() throws Exception {
         when(userRepository.findByUsername(Mockito.anyString()))
-                .thenReturn(Optional.of(new User("username")));
-		messageService.add("username", "First example message ");
+                .thenReturn(Optional.of(new User(USERNAME)));
+        messageService.add(USERNAME, SHORT_MESSAGE);
 
-	}
-
-	@Test(expected = JabberException.class)
-	public void testAddToLong()  throws Exception{
-
-		messageService.add("username", "1234567890123456789012345678901234567890" +
-				"12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
-				"12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
-				"12345678901234567890123456789012345678901234567890123456789012345678901234567890");
-
-	}
-
-	@Test
-	public void testReadMessageValid()  throws Exception{
-        when(userRepository.findByUsername(Mockito.anyString()))
-                .thenReturn(Optional.of(new User("username")));
-		List<Message> messageList = new ArrayList<Message>();
-		messageList.add(new Message("message1", new User("user1")));
-		when(messageRepository.findByCreatorOrderByPostingDateDesc(new User(Mockito.anyString())))
-				.thenReturn(messageList );
-		List<MessageDTO> messageDTOList = messageService.readMessages("username");
-        assertEquals(messageDTOList.get(0).getMessageText(), messageList.get(0).getMessageText());
-        assertEquals(messageDTOList.get(0).getCreator(), messageList.get(0).getCreator().getUsername());
-	}
+    }
 
     @Test(expected = JabberException.class)
-    public void testReadMessageInValid()  throws Exception{
-        when(userRepository.findByUsername(Mockito.anyString()))
-                .thenReturn(Optional.empty());
-        messageService.readMessages("username");
+    public void testAddToLong() throws Exception {
+
+        messageService.add(USERNAME, LONG_MESSAGE);
 
     }
 
     @Test
-    public void testreadFolloweeMessagesValid()  throws Exception{
+    public void testReadMessageValid() throws Exception {
         when(userRepository.findByUsername(Mockito.anyString()))
-                .thenReturn(Optional.of(new User("username")));
-        List<Message> messageList = new ArrayList<Message>();
-        messageList.add(new Message("message1", new User("user1")));
-        List<User> userList=new ArrayList<User>();
-        userList.add(new User(Mockito.anyString()));
-        when(messageRepository.findByCreatorInOrderByPostingDateDesc(userList))
+                .thenReturn(Optional.of(new User(USERNAME)));
+        List<Message> messageList = new ArrayList<>();
+        messageList.add(new Message(SHORT_MESSAGE, new User(USERNAME)));
+        when(messageRepository.findByCreatorOrderByPostingDateDesc(new User(Mockito.anyString())))
                 .thenReturn(messageList);
-        List<MessageDTO> messageDTOList = messageService.readFolloweeMessages("username");
+        List<MessageDTO> messageDTOList = messageService.readMessages(USERNAME);
         assertEquals(messageDTOList.get(0).getMessageText(), messageList.get(0).getMessageText());
         assertEquals(messageDTOList.get(0).getCreator(), messageList.get(0).getCreator().getUsername());
     }
 
     @Test(expected = JabberException.class)
-    public void testreadFolloweeMessagesInValid()  throws Exception{
+    public void testReadMessageInValid() throws Exception {
         when(userRepository.findByUsername(Mockito.anyString()))
                 .thenReturn(Optional.empty());
-        messageService.readFolloweeMessages("username");
+        messageService.readMessages(USERNAME);
+
+    }
+
+    @Test
+    public void testreadFolloweeMessagesValid() throws Exception {
+        when(userRepository.findByUsername(Mockito.anyString()))
+                .thenReturn(Optional.of(new User(USERNAME)));
+        List<Message> messageList = new ArrayList<Message>();
+        messageList.add(new Message(SHORT_MESSAGE, new User(USERNAME)));
+        List<User> userList = new ArrayList<User>();
+        userList.add(new User(Mockito.anyString()));
+        when(messageRepository.findByCreatorInOrderByPostingDateDesc(userList))
+                .thenReturn(messageList);
+        List<MessageDTO> messageDTOList = messageService.readFolloweeMessages(USERNAME);
+        assertEquals(messageDTOList.get(0).getMessageText(), messageList.get(0).getMessageText());
+        assertEquals(messageDTOList.get(0).getCreator(), messageList.get(0).getCreator().getUsername());
+    }
+
+    @Test(expected = JabberException.class)
+    public void testreadFolloweeMessagesInValid() throws Exception {
+        when(userRepository.findByUsername(Mockito.anyString()))
+                .thenReturn(Optional.empty());
+        messageService.readFolloweeMessages(USERNAME);
 
     }
 
